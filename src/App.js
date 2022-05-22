@@ -3,26 +3,23 @@ import Konva from "konva";
 import Header from "./components/header/Header";
 import Menu from "./components/SideBar/Menu";
 import "./App.css";
-import Button from "./components/Buttons/Button";
 
 function App() {
   const [stage, setStage] = useState();
-  const [color, setColor] = useState("black");
-
   useEffect(() => {
     stageContainer();
   }, []);
+
+  let frameHeight = 200;
+  let frameWidth = 150;
 
   var GUIDELINE_OFFSET = 5;
   var layer = new Konva.Layer();
   // were can we snap our objects?
   function getLineGuideStops(skipShape) {
-    // we can snap to stage borders and the center of the stage
     var vertical = [0, stage.width() / 2, stage.width()];
     var horizontal = [0, stage.height() / 2, stage.height()];
-
-    // and we snap over edges and center of each object on the canvas
-    stage.find(".object").forEach((guideItem) => {
+    layer.find(".fillLine").forEach((guideItem) => {
       if (guideItem === skipShape) {
         return;
       }
@@ -164,7 +161,7 @@ function App() {
           dash: [4, 6],
         });
         layer.add(line1);
-        line.absolutePosition({
+        line1.absolutePosition({
           x: lg.lineGuide,
           y: 0,
         });
@@ -192,9 +189,9 @@ function App() {
         return;
       }
       if (haveIntersection(group.getClientRect(), targetRect)) {
-        group.findOne('.fillLine').fill('red');
+        layer.findOne('.fillLine').fill('red');
       } else {
-        group.findOne('.fillLine').fill('lightblue');
+        layer.findOne('.fillLine').fill('lightblue');
       }
     });
     // clear all previous lines on the screen
@@ -276,7 +273,6 @@ function App() {
   });
 
   layer.on("dragend", function (e) {
-    // clear all previous lines on the screen
     layer.find(".guid-line").forEach((l) => l.destroy());
   });
 
@@ -291,7 +287,6 @@ function App() {
       sceneFunc: function (ctx) {
         ctx.fillStyle = "grey";
         ctx.lineWidth = 0.5;
-
         ctx.moveTo(0, 0);
         ctx.lineTo(-offset, 0);
 
@@ -400,63 +395,63 @@ function App() {
   }
 
   const createFrame = (frameWidth, frameHeight) => {
-    var padding = 20;
+    var padding = 0;
     var group = new Konva.Group();
-    var top = new Konva.Line({
-      points: [
-        0,
-        0,
-        frameWidth,
-        0,
-        frameWidth - padding,
-        padding,
-        padding,
-        padding,
-      ],
-      fill: "white",
-    });
+    // var top = new Konva.Line({
+    //   points: [
+    //     0,
+    //     0,
+    //     frameWidth,
+    //     0,
+    //     frameWidth - padding,
+    //     padding,
+    //     padding,
+    //     padding,
+    //   ],
+    //   fill: "white",
+    // });
 
-    var left = new Konva.Line({
-      points: [
-        0,
-        0,
-        padding,
-        padding,
-        padding,
-        frameHeight - padding,
-        0,
-        frameHeight,
-      ],
-      fill: "white",
-    });
+    // var left = new Konva.Line({
+    //   points: [
+    //     0,
+    //     0,
+    //     padding,
+    //     padding,
+    //     padding,
+    //     frameHeight - padding,
+    //     0,
+    //     frameHeight,
+    //   ],
+    //   fill: "white",
+    // });
 
-    var bottom = new Konva.Line({
-      points: [
-        0,
-        frameHeight,
-        padding,
-        frameHeight - padding,
-        frameWidth - padding,
-        frameHeight - padding,
-        frameWidth,
-        frameHeight,
-      ],
-      fill: "white",
-    });
+    // var bottom = new Konva.Line({
+    //   points: [
+    //     0,
+    //     frameHeight,
+    //     padding,
+    //     frameHeight - padding,
+    //     frameWidth - padding,
+    //     frameHeight - padding,
+    //     frameWidth,
+    //     frameHeight,
+    //   ],
+    //   fill: "white",
+    // });
 
-    var right = new Konva.Line({
-      points: [
-        frameWidth,
-        0,
-        frameWidth,
-        frameHeight,
-        frameWidth - padding,
-        frameHeight - padding,
-        frameWidth - padding,
-        padding,
-      ],
-      fill: "white",
-    });
+    // var right = new Konva.Line({
+    //   points: [
+    //     frameWidth,
+    //     0,
+    //     frameWidth,
+    //     frameHeight,
+    //     frameWidth - padding,
+    //     frameHeight - padding,
+    //     frameWidth - padding,
+    //     padding,
+    //   ],
+    //   fill: "white",
+    // });
 
     var glass = new Konva.Rect({
       x: padding,
@@ -466,14 +461,14 @@ function App() {
       fill: "lightblue",
       name:"fillLine"
     });
+    // layer.add(glass)
+    group.add(glass);
 
-    group.add(glass, top, left, bottom, right);
-
-    group.find("Line").forEach((line) => {
-      line.closed(true);
-      line.stroke("black");
-      line.strokeWidth(1);
-    });
+    // group.find("Line").forEach((line) => {
+    //   line.closed(true);
+    //   line.stroke("black");
+    //   line.strokeWidth(1);
+    // });
 
     return group;
   };
@@ -491,14 +486,14 @@ function App() {
     let group = new Konva.Group({
       draggable: true,
     });
-    let frameline = createFrame(250, 400);
+    let frameline = createFrame(frameWidth, frameHeight);
 
     var wr = stage.width() / 250;
     var hr = stage.height() / 400;
     var ratio = Math.min(wr, hr) * 0.8;
 
-    var frameOnScreenWidth = 250 * ratio;
-    var frameOnScreenHeight = 400 * ratio;
+    var frameOnScreenWidth = frameWidth * ratio;
+    var frameOnScreenHeight = frameHeight * ratio;
     var infoGroup = createInfo(frameOnScreenWidth, frameOnScreenHeight);
     group.add(infoGroup);
     group.add(frameline);

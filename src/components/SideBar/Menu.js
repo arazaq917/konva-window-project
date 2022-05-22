@@ -12,7 +12,6 @@ const Menu = (props) => {
         <h3>Menu Bar</h3>
         <div>
           <Button onClick={addShape}>Add 1st Window</Button>
-          <Button>Add 2nd Window</Button>
         </div>
       </div>
     </>
