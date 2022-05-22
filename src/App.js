@@ -20,6 +20,7 @@ function App() {
     var vertical = [0, stage.width() / 2, stage.width()];
     var horizontal = [0, stage.height() / 2, stage.height()];
     layer.find(".fillLine").forEach((guideItem) => {
+      console.log("guideItem", guideItem);
       if (guideItem === skipShape) {
         return;
       }
@@ -140,7 +141,7 @@ function App() {
   function drawGuides(guides) {
     guides.forEach((lg) => {
       if (lg.orientation === "H") {
-        var line = new Konva.Line({
+        let line = new Konva.Line({
           points: [-6000, 0, 6000, 0],
           stroke: "rgb(0, 161, 255)",
           strokeWidth: 1,
@@ -153,15 +154,15 @@ function App() {
           y: lg.lineGuide,
         });
       } else if (lg.orientation === "V") {
-        var line1 = new Konva.Line({
+        let line = new Konva.Line({
           points: [0, -6000, 0, 6000],
           stroke: "rgb(0, 161, 255)",
           strokeWidth: 1,
           name: "guid-line",
           dash: [4, 6],
         });
-        layer.add(line1);
-        line1.absolutePosition({
+        layer.add(line);
+        line.absolutePosition({
           x: lg.lineGuide,
           y: 0,
         });
@@ -169,31 +170,31 @@ function App() {
     });
   }
   // layer.on('dragmove', function (e) {
-    
+
   // });
 
-  function haveIntersection(r1, r2) {
-    return !(
-      r2.x > r1.x + r1.width ||
-      r2.x + r2.width < r1.x ||
-      r2.y > r1.y + r1.height ||
-      r2.y + r2.height < r1.y
-    );
-  }
+  // function haveIntersection(r1, r2) {
+  //   return !(
+  //     r2.x > r1.x + r1.width ||
+  //     r2.x + r2.width < r1.x ||
+  //     r2.y > r1.y + r1.height ||
+  //     r2.y + r2.height < r1.y
+  //   );
+  // }
   layer.on("dragmove", function (e) {
-    var target = e.target;
-    var targetRect = e.target.getClientRect();
-    layer.children.forEach(function (group) {
-      // do not check intersection with itself
-      if (group === target) {
-        return;
-      }
-      if (haveIntersection(group.getClientRect(), targetRect)) {
-        layer.findOne('.fillLine').fill('red');
-      } else {
-        layer.findOne('.fillLine').fill('lightblue');
-      }
-    });
+    // var target = e.target;
+    // var targetRect = e.target.getClientRect();
+    // layer.children.forEach(function (group) {
+    //   // do not check intersection with itself
+    //   if (group === target) {
+    //     return;
+    //   }
+    //   if (haveIntersection(group.getClientRect(), targetRect)) {
+    //     layer.findOne('.fillLine').fill('red');
+    //   } else {
+    //     layer.findOne('.fillLine').fill('lightblue');
+    //   }
+    // });
     // clear all previous lines on the screen
     layer.find(".guid-line").forEach((l) => l.destroy());
 
@@ -389,7 +390,7 @@ function App() {
       y: frameHeight + arrowOffset,
     });
 
-    group.add(lines, leftArrow, bottomArrow, leftLabel, bottomLabel);
+    // group.add(lines, leftArrow, bottomArrow, leftLabel, bottomLabel);
 
     return group;
   }
@@ -454,14 +455,13 @@ function App() {
     // });
 
     var glass = new Konva.Rect({
-      x: padding,
-      y: padding,
+      x: Math.random() * stage.width(),
+      y: Math.random() * stage.height(),
       width: frameWidth - padding * 2,
       height: frameHeight - padding * 2,
       fill: "lightblue",
-      name:"fillLine"
+      name: "fillLine",
     });
-    // layer.add(glass)
     group.add(glass);
 
     // group.find("Line").forEach((line) => {
@@ -478,7 +478,6 @@ function App() {
       container: "container",
       width: 800,
       height: 500,
-      backgroundColor: "green",
     });
     setStage(stage);
   };
