@@ -20,11 +20,12 @@ function App() {
     var vertical = [0, stage.width() / 2, stage.width()];
     var horizontal = [0, stage.height() / 2, stage.height()];
     layer.find(".fillLine").forEach((guideItem) => {
-      console.log("guideItem", guideItem);
       if (guideItem === skipShape) {
         return;
       }
       var box = guideItem.getClientRect();
+      console.log("guideItem", box);
+
       // and we can snap to all edges of shapes
       vertical.push([box.x, box.x + box.width, box.x + box.width / 2]);
       horizontal.push([box.y, box.y + box.height, box.y + box.height / 2]);
@@ -34,10 +35,6 @@ function App() {
       horizontal: horizontal.flat(),
     };
   }
-
-  // what points of the object will trigger to snapping?
-  // it can be just center of the object
-  // but we will enable all edges and center
   function getObjectSnappingEdges(node) {
     var box = node.getClientRect();
     var absPos = node.absolutePosition();
@@ -173,28 +170,28 @@ function App() {
 
   // });
 
-  // function haveIntersection(r1, r2) {
-  //   return !(
-  //     r2.x > r1.x + r1.width ||
-  //     r2.x + r2.width < r1.x ||
-  //     r2.y > r1.y + r1.height ||
-  //     r2.y + r2.height < r1.y
-  //   );
-  // }
+  function haveIntersection(r1, r2) {
+    return !(
+      r2.x > r1.x + r1.width ||
+      r2.x + r2.width < r1.x ||
+      r2.y > r1.y + r1.height ||
+      r2.y + r2.height < r1.y
+    );
+  }
   layer.on("dragmove", function (e) {
-    // var target = e.target;
-    // var targetRect = e.target.getClientRect();
-    // layer.children.forEach(function (group) {
-    //   // do not check intersection with itself
-    //   if (group === target) {
-    //     return;
-    //   }
-    //   if (haveIntersection(group.getClientRect(), targetRect)) {
-    //     layer.findOne('.fillLine').fill('red');
-    //   } else {
-    //     layer.findOne('.fillLine').fill('lightblue');
-    //   }
-    // });
+    var target = e.target;
+    var targetRect = e.target.getClientRect();
+    layer.children.forEach(function (group) {
+      // do not check intersection with itself
+      if (group === target) {
+        return;
+      }
+      if (haveIntersection(group.getClientRect(), targetRect)) {
+        layer.findOne(".fillLine").fill("red");
+      } else {
+        layer.findOne(".fillLine").fill("lightblue");
+      }
+    });
     // clear all previous lines on the screen
     layer.find(".guid-line").forEach((l) => l.destroy());
 
@@ -274,6 +271,7 @@ function App() {
   });
 
   layer.on("dragend", function (e) {
+    // console.log("me call ho rha hon");
     layer.find(".guid-line").forEach((l) => l.destroy());
   });
 
@@ -314,7 +312,7 @@ function App() {
         // line
         ctx.moveTo(-arrowOffset, 0);
         ctx.lineTo(-arrowOffset, frameHeight);
-
+        console.log("frame height",frameHeight);
         // bottom pointer
         ctx.moveTo(-arrowOffset - arrowSize, frameHeight - arrowSize);
         ctx.lineTo(-arrowOffset, frameHeight);
@@ -390,85 +388,101 @@ function App() {
       y: frameHeight + arrowOffset,
     });
 
-    // group.add(lines, leftArrow, bottomArrow, leftLabel, bottomLabel);
+    group.add(lines, leftArrow, bottomArrow);
 
     return group;
   }
 
   const createFrame = (frameWidth, frameHeight) => {
-    var padding = 0;
+    var padding = 10;
     var group = new Konva.Group();
-    // var top = new Konva.Line({
-    //   points: [
-    //     0,
-    //     0,
-    //     frameWidth,
-    //     0,
-    //     frameWidth - padding,
-    //     padding,
-    //     padding,
-    //     padding,
-    //   ],
-    //   fill: "white",
-    // });
+    var top = new Konva.Line({
+      points: [
+        0,
+        0,
+        frameWidth,
+        0,
+        frameWidth - padding,
+        padding,
+        padding,
+        padding,
+      ],
+      fill: "white",
+      name: "fillLine",
+    });
 
-    // var left = new Konva.Line({
-    //   points: [
-    //     0,
-    //     0,
-    //     padding,
-    //     padding,
-    //     padding,
-    //     frameHeight - padding,
-    //     0,
-    //     frameHeight,
-    //   ],
-    //   fill: "white",
-    // });
+    var left = new Konva.Line({
+      points: [
+        0,
+        0,
+        padding,
+        padding,
+        padding,
+        frameHeight - padding,
+        0,
+        frameHeight,
+      ],
+      fill: "white",
+      name: "fillLine",
+    });
 
-    // var bottom = new Konva.Line({
-    //   points: [
-    //     0,
-    //     frameHeight,
-    //     padding,
-    //     frameHeight - padding,
-    //     frameWidth - padding,
-    //     frameHeight - padding,
-    //     frameWidth,
-    //     frameHeight,
-    //   ],
-    //   fill: "white",
-    // });
+    var bottom = new Konva.Line({
+      points: [
+        0,
+        frameHeight,
+        padding,
+        frameHeight - padding,
+        frameWidth - padding,
+        frameHeight - padding,
+        frameWidth,
+        frameHeight,
+      ],
+      fill: "white",
+      name: "fillLine",
+    });
 
-    // var right = new Konva.Line({
-    //   points: [
-    //     frameWidth,
-    //     0,
-    //     frameWidth,
-    //     frameHeight,
-    //     frameWidth - padding,
-    //     frameHeight - padding,
-    //     frameWidth - padding,
-    //     padding,
-    //   ],
-    //   fill: "white",
-    // });
+    var right = new Konva.Line({
+      points: [
+        frameWidth,
+        0,
+        frameWidth,
+        frameHeight,
+        frameWidth - padding,
+        frameHeight - padding,
+        frameWidth - padding,
+        padding,
+      ],
+      fill: "white",
+      name: "fillLine",
+    });
 
-    var glass = new Konva.Rect({
-      x: Math.random() * stage.width(),
-      y: Math.random() * stage.height(),
+    let glass = new Konva.Rect({
+      x: padding,
+      y: padding,
       width: frameWidth - padding * 2,
       height: frameHeight - padding * 2,
       fill: "lightblue",
-      name: "fillLine",
     });
-    group.add(glass);
+    group.add(glass, top, bottom, left, right);
 
-    // group.find("Line").forEach((line) => {
-    //   line.closed(true);
-    //   line.stroke("black");
-    //   line.strokeWidth(1);
-    // });
+    var MAX_WIDTH = 200;
+    // create new transformer
+    var tr = new Konva.Transformer({
+      boundBoxFunc: function (oldBoundBox, newBoundBox) {
+        if (Math.abs(newBoundBox.width) > MAX_WIDTH) {
+          return oldBoundBox;
+        }
+
+        return newBoundBox;
+      },
+    });
+    layer.add(tr);
+    tr.nodes([glass]);
+    group.find("Line").forEach((line) => {
+      line.closed(true);
+      line.stroke("black");
+      line.strokeWidth(1);
+    });
 
     return group;
   };
@@ -476,8 +490,8 @@ function App() {
   const stageContainer = () => {
     let stage = new Konva.Stage({
       container: "container",
-      width: 800,
-      height: 500,
+      width: 780,
+      height: 454,
     });
     setStage(stage);
   };
@@ -500,11 +514,12 @@ function App() {
     stage.add(layer);
     layer.draw();
   };
+  window.stage = stage;
   return (
     <div className="app">
       <Header />
-      <div className="inner-div">
-        <Menu addShape={addShape} />
+      <Menu addShape={addShape} />
+      <div className="container-div">
         <div id="container"></div>
       </div>
     </div>

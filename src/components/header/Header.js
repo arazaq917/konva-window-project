@@ -1,12 +1,13 @@
-import React from 'react'
-import './header.css';
+import React from "react";
+import "./header.css";
 
 const Header = () => {
   return (
-    <div className='header'>
-        <div>Header</div>
+    <div className="header">
+      <span className="header-title">Aspire</span>
+      <div className="header-text">Aspire Window Configurator</div>
     </div>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
