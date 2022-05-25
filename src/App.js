@@ -13,17 +13,17 @@ function App() {
   let frameHeight = 200;
   let frameWidth = 150;
 
-  var GUIDELINE_OFFSET = 5;
-  var layer = new Konva.Layer();
+  let GUIDELINE_OFFSET = 5;
+  let layer = new Konva.Layer();
   // were can we snap our objects?
   function getLineGuideStops(skipShape) {
-    var vertical = [0, stage.width() / 2, stage.width()];
-    var horizontal = [0, stage.height() / 2, stage.height()];
+    let vertical = [0, stage.width() / 2, stage.width()];
+    let horizontal = [0, stage.height() / 2, stage.height()];
     layer.find(".fillLine").forEach((guideItem) => {
       if (guideItem === skipShape) {
         return;
       }
-      var box = guideItem.getClientRect();
+      let box = guideItem.getClientRect();
       console.log("guideItem", box);
 
       // and we can snap to all edges of shapes
@@ -36,8 +36,8 @@ function App() {
     };
   }
   function getObjectSnappingEdges(node) {
-    var box = node.getClientRect();
-    var absPos = node.absolutePosition();
+    let box = node.getClientRect();
+    let absPos = node.absolutePosition();
 
     return {
       vertical: [
@@ -79,12 +79,12 @@ function App() {
 
   // find all snapping possibilities
   function getGuides(lineGuideStops, itemBounds) {
-    var resultV = [];
-    var resultH = [];
+    let resultV = [];
+    let resultH = [];
 
     lineGuideStops.vertical.forEach((lineGuide) => {
       itemBounds.vertical.forEach((itemBound) => {
-        var diff = Math.abs(lineGuide - itemBound.guide);
+        let diff = Math.abs(lineGuide - itemBound.guide);
         // if the distance between guild line and object snap point is close we can consider this for snapping
         if (diff < GUIDELINE_OFFSET) {
           resultV.push({
@@ -99,7 +99,7 @@ function App() {
 
     lineGuideStops.horizontal.forEach((lineGuide) => {
       itemBounds.horizontal.forEach((itemBound) => {
-        var diff = Math.abs(lineGuide - itemBound.guide);
+        let diff = Math.abs(lineGuide - itemBound.guide);
         if (diff < GUIDELINE_OFFSET) {
           resultH.push({
             lineGuide: lineGuide,
@@ -111,11 +111,11 @@ function App() {
       });
     });
 
-    var guides = [];
+    let guides = [];
 
     // find closest snap
-    var minV = resultV.sort((a, b) => a.diff - b.diff)[0];
-    var minH = resultH.sort((a, b) => a.diff - b.diff)[0];
+    let minV = resultV.sort((a, b) => a.diff - b.diff)[0];
+    let minH = resultH.sort((a, b) => a.diff - b.diff)[0];
     if (minV) {
       guides.push({
         lineGuide: minV.lineGuide,
@@ -170,38 +170,38 @@ function App() {
 
   // });
 
-  function haveIntersection(r1, r2) {
-    return !(
-      r2.x > r1.x + r1.width ||
-      r2.x + r2.width < r1.x ||
-      r2.y > r1.y + r1.height ||
-      r2.y + r2.height < r1.y
-    );
-  }
+  // function haveIntersection(r1, r2) {
+  //   return !(
+  //     r2.x > r1.x + r1.width ||
+  //     r2.x + r2.width < r1.x ||
+  //     r2.y > r1.y + r1.height ||
+  //     r2.y + r2.height < r1.y
+  //   );
+  // }
   layer.on("dragmove", function (e) {
-    var target = e.target;
-    var targetRect = e.target.getClientRect();
-    layer.children.forEach(function (group) {
-      // do not check intersection with itself
-      if (group === target) {
-        return;
-      }
-      if (haveIntersection(group.getClientRect(), targetRect)) {
-        layer.findOne(".fillLine").fill("red");
-      } else {
-        layer.findOne(".fillLine").fill("lightblue");
-      }
-    });
+    // let target = e.target;
+    // let targetRect = e.target.getClientRect();
+    // layer.children.forEach(function (group) {
+    //   // do not check intersection with itself
+    //   if (group === target) {
+    //     return;
+    //   }
+    //   if (haveIntersection(group.getClientRect(), targetRect)) {
+    //     layer.findOne(".fillLine").fill("red");
+    //   } else {
+    //     layer.findOne(".fillLine").fill("lightblue");
+    //   }
+    // });
     // clear all previous lines on the screen
     layer.find(".guid-line").forEach((l) => l.destroy());
 
     // find possible snapping lines
-    var lineGuideStops = getLineGuideStops(e.target);
+    let lineGuideStops = getLineGuideStops(e.target);
     // find snapping points of current object
-    var itemBounds = getObjectSnappingEdges(e.target);
+    let itemBounds = getObjectSnappingEdges(e.target);
 
     // now find where can we snap current object
-    var guides = getGuides(lineGuideStops, itemBounds);
+    let guides = getGuides(lineGuideStops, itemBounds);
 
     // do nothing of no snapping
     if (!guides.length) {
@@ -210,7 +210,7 @@ function App() {
 
     drawGuides(guides);
 
-    var absPos = e.target.absolutePosition();
+    let absPos = e.target.absolutePosition();
     // now force object position
     guides.forEach((lg) => {
       switch (lg.snap) {
@@ -276,13 +276,13 @@ function App() {
   });
 
   function createInfo(frameWidth, frameHeight) {
-    var offset = 20;
+    let offset = 20;
 
-    var arrowOffset = offset / 2;
-    var arrowSize = 5;
+    let arrowOffset = offset / 2;
+    let arrowSize = 5;
 
-    var group = new Konva.Group();
-    var lines = new Konva.Shape({
+    let group = new Konva.Group();
+    let lines = new Konva.Shape({
       sceneFunc: function (ctx) {
         ctx.fillStyle = "grey";
         ctx.lineWidth = 0.5;
@@ -302,7 +302,7 @@ function App() {
       },
     });
 
-    var leftArrow = new Konva.Shape({
+    let leftArrow = new Konva.Shape({
       sceneFunc: function (ctx) {
         // top pointer
         ctx.moveTo(-arrowOffset - arrowSize, arrowSize);
@@ -324,7 +324,7 @@ function App() {
       strokeWidth: 0.5,
     });
 
-    var bottomArrow = new Konva.Shape({
+    let bottomArrow = new Konva.Shape({
       sceneFunc: function (ctx) {
         // top pointer
         ctx.translate(0, frameHeight + arrowOffset);
@@ -348,7 +348,7 @@ function App() {
     });
 
     // left text
-    var leftLabel = new Konva.Label();
+    let leftLabel = new Konva.Label();
 
     leftLabel.add(
       new Konva.Tag({
@@ -356,7 +356,7 @@ function App() {
         stroke: "grey",
       })
     );
-    var leftText = new Konva.Text({
+    let leftText = new Konva.Text({
       text: 400 + "mm",
       padding: 2,
       fill: "black",
@@ -368,7 +368,7 @@ function App() {
       y: frameHeight / 2 - leftText.height() / 2,
     });
     // bottom text
-    var bottomLabel = new Konva.Label();
+    let bottomLabel = new Konva.Label();
 
     bottomLabel.add(
       new Konva.Tag({
@@ -376,7 +376,7 @@ function App() {
         stroke: "grey",
       })
     );
-    var bottomText = new Konva.Text({
+    let bottomText = new Konva.Text({
       text: 250 + "mm",
       padding: 2,
       fill: "black",
@@ -388,15 +388,19 @@ function App() {
       y: frameHeight + arrowOffset,
     });
 
-    group.add(lines, leftArrow, bottomArrow);
+    // group.add(lines, leftArrow, bottomArrow);
 
     return group;
   }
 
   const createFrame = (frameWidth, frameHeight) => {
-    var padding = 10;
-    var group = new Konva.Group();
-    var top = new Konva.Line({
+    let padding = 10;
+    let group = new Konva.Group({
+      resizeable:true,
+      name: "fillLine",
+      draggable:true
+    });
+    let top = new Konva.Line({
       points: [
         0,
         0,
@@ -408,10 +412,9 @@ function App() {
         padding,
       ],
       fill: "white",
-      name: "fillLine",
     });
 
-    var left = new Konva.Line({
+    let left = new Konva.Line({
       points: [
         0,
         0,
@@ -423,10 +426,9 @@ function App() {
         frameHeight,
       ],
       fill: "white",
-      name: "fillLine",
     });
 
-    var bottom = new Konva.Line({
+    let bottom = new Konva.Line({
       points: [
         0,
         frameHeight,
@@ -438,10 +440,9 @@ function App() {
         frameHeight,
       ],
       fill: "white",
-      name: "fillLine",
     });
 
-    var right = new Konva.Line({
+    let right = new Konva.Line({
       points: [
         frameWidth,
         0,
@@ -453,7 +454,6 @@ function App() {
         padding,
       ],
       fill: "white",
-      name: "fillLine",
     });
 
     let glass = new Konva.Rect({
@@ -465,9 +465,9 @@ function App() {
     });
     group.add(glass, top, bottom, left, right);
 
-    var MAX_WIDTH = 200;
+    let MAX_WIDTH = 200;
     // create new transformer
-    var tr = new Konva.Transformer({
+    let tr = new Konva.Transformer({
       boundBoxFunc: function (oldBoundBox, newBoundBox) {
         if (Math.abs(newBoundBox.width) > MAX_WIDTH) {
           return oldBoundBox;
@@ -477,7 +477,7 @@ function App() {
       },
     });
     layer.add(tr);
-    tr.nodes([glass]);
+    // tr.nodes([glass]);
     group.find("Line").forEach((line) => {
       line.closed(true);
       line.stroke("black");
@@ -501,13 +501,13 @@ function App() {
     });
     let frameline = createFrame(frameWidth, frameHeight);
 
-    var wr = stage.width() / 250;
-    var hr = stage.height() / 400;
-    var ratio = Math.min(wr, hr) * 0.8;
+    let wr = stage.width() / 250;
+    let hr = stage.height() / 400;
+    let ratio = Math.min(wr, hr) * 0.8;
 
-    var frameOnScreenWidth = frameWidth * ratio;
-    var frameOnScreenHeight = frameHeight * ratio;
-    var infoGroup = createInfo(frameOnScreenWidth, frameOnScreenHeight);
+    let frameOnScreenWidth = frameWidth * ratio;
+    let frameOnScreenHeight = frameHeight * ratio;
+    let infoGroup = createInfo(frameOnScreenWidth, frameOnScreenHeight);
     group.add(infoGroup);
     group.add(frameline);
     layer.add(group);
