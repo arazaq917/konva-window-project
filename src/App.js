@@ -389,7 +389,7 @@ function App() {
     });
 
     // group.add(lines, leftArrow, bottomArrow);
-
+    console.log("done")
     return group;
   }
 
