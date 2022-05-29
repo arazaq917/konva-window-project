@@ -8,13 +8,14 @@ function App() {
     const [stage, setStage] = useState();
     const [wHeight, setHeight] = useState(200);
     const [wWidth, setWidth] = useState(150);
+    
 
     useEffect(() => {
         stageContainer();
     }, []);
 
-    let frameHeight = 200;
     let frameWidth = 150;
+    let frameHeight = 200;
 
     let GUIDELINE_OFFSET = 5;
     let layer = new Konva.Layer();
@@ -275,6 +276,7 @@ function App() {
     });
 
     function createInfo(frameWidth, frameHeight) {
+      console.log("creating agian", frameWidth, frameHeight);
         // console.log("framwidth",frameWidth)
         // console.log("frameHeight",frameHeight)
         let offset = 20;
@@ -338,7 +340,7 @@ function App() {
             })
         );
         let leftText = new Konva.Text({
-            text: frameHeight + "mm",
+            text: frameHeight.toFixed(2) + "mm",
             padding: 2,
             fill: "black",
         });
@@ -358,7 +360,7 @@ function App() {
             })
         );
         let bottomText = new Konva.Text({
-            text: frameWidth + "mm",
+            text: frameWidth.toFixed(2) + "mm",
             padding: 2,
             fill: "black",
         });
@@ -456,6 +458,9 @@ function App() {
                 setHeight(groupHeight);
                 setWidth(groupWidth);
                 console.log("After groupHeight",wHeight)
+                stage.children[0].children[1].children.pop();
+                 let infoGroup = createInfo(groupWidth, groupHeight);
+                 stage.children[0].children[1].add(infoGroup);
 
                 return newBoundBox;
             },
@@ -486,8 +491,8 @@ function App() {
         let frameLine = createFrame(frameWidth, frameHeight);
         let infoGroup = createInfo(frameWidth, frameHeight);
 
-        group.add(infoGroup);
         group.add(frameLine);
+        group.add(infoGroup);
         layer.add(group);
         stage.add(layer);
         layer.draw();
